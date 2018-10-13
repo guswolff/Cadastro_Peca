@@ -3,42 +3,68 @@ cad=[]
 vend=[]
 
   
-#Função insere
-def menu(item):
+#1-Função insere
+def insere(item):
    
   op="s"
 
   while op=="s":
-    #Chama a função que verifica e insere o CÓDIGO da peça.
-    vfCod(cad)    
-    #Chama a função que verifica e insere o NOME da peça.
-    vfNom(cad)
+    #Recebe e verifica o código da peça
+    cod=(int(input("Código da peça:")))  
+    while cod<0:
+      cod=int(input("Erro! Não é possivel inserir valores repetidos para código ou negativos!\nTente um novo valor: ")) 
+    for k in cad:
+      while cod<0 or cod==k[0]:      
+        cod=int(input("Erro! Não é possivel inserir valores repetidos para código ou negativos!\nTente um novo valor: "))    
+    
+    item.append(cod) 
+    
+    #Recebe e verifica o nome da peça
+    nom=str(input("Digite o nome da peça:")) 
+  
+    for k in cad:
+      while nom==k[1]:
+        nom=str(input("Erro! Já uma peça com esse nome!\nTente um novo nome:"))
+    
+    item.append(nom)
 
+    #Recebe e verifica a categoria da peça
     cat=(int(input("Categoria da peça:")))
     while cat<1 or cat>20:
       print("Erro digite uma categoria entre 1 e 20.")
       cat=(int(input("Categoria da peça:")))
     item.append(cat)
 
+    #Recebe e verifica o preço da peça
     prec=(float(input("Preço da peça :"))) 
     while prec<0:
       prec=(float(input("Erro! Digite um valor positivo para preço:")))
     item.append(prec)
 
+    #Recebe e verifica a quantidade de peças
     quant=(int(input("Quantidade de peças:")))
     while quant<0:
       quant=(int(input("Erro! Digite um valor positivo para quantidade de peças:")))
     item.append(quant)
 
+    #Copia a lista item para a lista cad e apaga lista item
+    
     cad.append(item.copy())
     item.clear()
     print(cad)
     print(len(cad))
 
-    op=str(input("Deseja continuar?(s/n)"))    
-  select(cad)
+    #Verifica se deseja continuar inserindo itens
+    op=str(input("Deseja continuar inserindo itens?(s/n)"))
+    while op!="s" and op!="n": 
+      op=str(input("Deseja continuar inserindo itens?(s/n)"))   
+    else:
+      if op=="s":
+        insere(item)
+      else:
+        select(cad)
 
-#Função 1- Mostra todo cadastro c/ filtro numérico  
+#2-Função Mostra   
 def mostra(cad):
   
   # para não repetir em cada opção se determina um valor de "i" conforme a opção escolhida e a função filtra em função desse "i"
@@ -49,12 +75,22 @@ def mostra(cad):
   
     for k in cad:    
       if k[i]<=xsup and k[i]>=xinf:
-        print(k)
+        #Esses print foram pra apresentar os dados de forma mais bonita
+        print("\nCódigo:",k[0])
+        print("Nome:",k[1])
+        print("Categoria:",k[2]," Preço:",k[3],"Quantidade:",k[4],"\n")
+
+    #verifica se deseja continuar na opção    
     ch=str(input("Deseja mostrar o cadastro com um  novo filtro?(s/n)"))
-    while ch=="s":
-      mostra(cad)
-    if ch=="n":
-      select(cad)   
+    while ch!="s" and ch!="n":
+      ch=str(input("Deseja mostrar o cadastro com um  novo filtro?(s/n)"))
+      
+    else:
+      if ch=="s":
+        mostra(cad)
+      elif ch=="n":        
+        select(cad)
+        
 
   op=int(input("Escolha o campo da pesquisa a ser filtrado\n1-Código\n2-Categoria\n3-Preço\n4-Quantidade\n"))
 
@@ -63,7 +99,7 @@ def mostra(cad):
   while op<1 or op>4:
     op=int(input("Opção inexistente. Escolha uma opção valida: "))
     mostra(cad)
-  
+  #Onde esta sendo atribuido os valores de i para a função acima
   if op==1:
     i=0  
     vmostra(cad)
@@ -80,93 +116,108 @@ def mostra(cad):
     i=4    
     vmostra(cad)
 
-  
-
- 
-      
-#Função verifica sé já existe alguma peça com esse código no cadastro e apresenta erro se código for valor negativo.
-
-def vfCod(cad):
-  cod=(int(input("Código da peça:")))
-  while cod<=0:
-    cod=(int(input("Erro! digite um valor positivo:")))
-  
-  
-  for k in cad:
-    while cod==k[0]:      
-      cod=(int(input("Erro! Já existe uma peça com esse código!\nTente um novo valor: ")))    
-    
-  item.append(cod)
-  
-
-  
-
-#Fução verifica se já existe alguma peça com esse nome no cadastro:
-
-def vfNom(cad):
-  nom=str(input("Digite o nome da peça:")) 
-  
-  for k in cad:
-    while nom==k[1]:
-      nom=str(input("Erro! Já uma peça com esse nome!\nTente um novo nome:"))
-    
-  item.append(nom)
-
-     
     
 
-#Função 3- Remover peça
+#3=Função Remover peça
 def remv(cad):
   opc=(int(input("Qual o metodo da remoção?\n 1-Código\n 2-Nome\n 3-Categoria\n 4-Cancela\n")))
   while opc!= 1 and opc!=2 and opc!=3 and opc!=4:
     print("Digite uma opção valida.")
-    opc=(int(input("Qual o metodo da remoção?\n 1-Código\n 2-Nome\n 3-Categoria\n")))
+    opc=(int(input("Qual o metodo da remoção?\n 1-Código\n 2-Nome\n 3-Categoria\n 4-Cancela\n")))
   if opc==1:
     xcod=int(input("Digite o código da peça:"))
-    i=0
-    for k in cad:
-      if xcod==k[0]:            
-        cad.pop(i)
-      i+=1  
+    
+    removeu = True
+    while removeu:
+      removeu = False  
+      for k in cad:
+        if xcod==k[0]:            
+          cad.remove(k)
+          
+          removeu = True
+          
+          break
+            
   elif opc==2:
     xnome=str(input("Digite o nome da peça:"))
-    i=0
-    for k in cad:
-      if xnome==k[1]:                 
-        cad.pop(i) 
-      i+=1   
+    
+    removeu = True
+    while removeu:
+      removeu = False  
+      for k in cad:
+        if xnome==k[1]:                 
+          cad.remove(k) 
+          
+          removeu = True
+          
+          break
+           
   elif opc==3:
     xcat=int(input("Digite a categoria:"))
-    i=0
-    for k in cad:
-      if xcat==k[2]:        
-        cad.pop(i)      
-      i+=1
+    
+    removeu = True
+    while removeu:
+      removeu = False  
+      for k in cad:
+        if xcat==k[2]:        
+          cad.remove(k)
+          
+          removeu = True
+          
+          break      
+          
   #Opção 4 serve como cancela e volta para o menu inicial.    
   elif opc==4:
     select(cad)
 
+  print("Peça removida!")
   ch=str(input("Deseja remover mais algum item?(s/n)"))
-  while ch=="s":
-    remv(item)
-  if ch=="n":
-    select(cad)
+  while ch!="s" and ch!="n":
+      ch=str(input("Deseja remover mais algum item?(s/n)"))
+      
+  else:
+    if ch=="s":
+      remv(cad)
+    elif ch=="n":        
+      select(cad)
+  
+  
+  
   
 
-#Função 4- Editar peça
+#4-Função Editar peça
 def edit(cad):
   opc=int(input("Escolha o metodo para a seleção da peça à ser alterada:\n1-Código\n2-Nome"))
   while opc<1 and opc>2:
     opc=int(input("Erro! Escolha uma opção válida:\n1-Código\n2-Nome:"))
   if opc==1:
     cod=int(input("Digite o código da peça à ser alterada:"))
-    i=0
+    
     for k in cad:
       
       if cod==k[0]:
-        cad.pop(i)        
-        menu(item)
-      i+=1
+        nom=str(input("Digite o novo nome da peça:"))
+  
+        for j in cad:
+          while nom==j[1]:
+            nom=str(input("Erro! Já uma peça com esse nome!\nTente um novo nome:"))
+
+        k[1]=nom 
+        cat=int(input("Digite a nova categoria da peça:"))
+        while cat<1 or cat>20:
+          print("Erro digite uma categoria entre 1 e 20.")
+          cat=int(input("Categoria da peça:"))
+        k[2]=cat
+        prec=float(input("Digite o novo preço da peça:"))
+        while prec<0:
+          prec=float(input("Erro! Digite um valor positivo para preço:"))
+        k[3]=prec
+        quant=int(input("Digite a nova quantidade de peças:"))
+        while quant<0:
+          quant=int(input("Erro! Digite um valor positivo para quantidade de peças:"))
+        k[4]=quant
+        
+    print("Peça editada!")  
     ch=str(input("Deseja editar mais algum item?(s/n):"))
     while ch=="s":
       edit(cad)
@@ -175,31 +226,60 @@ def edit(cad):
 
   elif opc==2:
     nom=str(input("Digite o nome da peça à ser alterada:"))
-    i=0
+    
     for k in cad:
       
       if nom==k[1]:
-        cad.pop(i)        
-        menu(item)
-      i+=1
-    ch=str(input("Deseja editar mais algum item?(s/n):"))
-    while ch=="s":
-      edit(cad)
-    if ch=="n":
-      select(cad) 
 
-#Função 5- Vender peça
+        cod=int(input("Digite o novo código da peça:"))
+
+        for j in cad:
+          while cod==j[0]:      
+            cod=int(input("Erro! Já existe uma peça com esse código!\nTente um novo valor: ")) 
+        k[0]=cod 
+        cat=int(input("Digite a nova categoria da peça:"))
+        while cat<1 or cat>20:
+          print("Erro digite uma categoria entre 1 e 20.")
+          cat=int(input("Categoria da peça:"))
+        k[2]=cat
+        prec=float(input("Digite o novo preço da peça:"))
+        while prec<0:
+          prec=float(input("Erro! Digite um valor positivo para preço:"))
+        k[3]=prec
+        quant=int(input("Digite a nova quantidade de peças:"))
+        while quant<0:
+          quant=int(input("Erro! Digite um valor positivo para quantidade de peças:"))
+        k[4]=quant
+
+        
+    print("Peça editada!")  
+    ch=str(input("Deseja editar mais algum item?(s/n):"))
+
+    while ch!="s" and ch!="n":
+      ch=str(input("Deseja editar mais algum item?(s/n)"))
+      
+    else:
+      if ch=="s":
+        edit(cad)
+      elif ch=="n":        
+        select(cad)
+
+
+    
+
+#5-Função Vender peça
 
 def venda(cad):
   op=int(input("Selecione o método de identificação da peça vendida:\n1-Código\n2-Nome\n"))
+  
   if op==1:
     cod=int(input("Digite o código da peça vendida:"))
-    i=0
+    
     for k in cad:
       if cod==k[0]:
         xquant=int(input("Digite a quantidade vendida do item:"))
         while k[4]-xquant<0:
-          xquant=int(input("Erro! O item não possui estoque suficiente para essa venda!\nInsira um valor menor:"))
+          xquant=int(input("Erro! O item não possui estoque suficiente para essa venda!\nInsira um valor menor:\n"))
         k[4]=k[4]-xquant
         item.append(k[0])
         item.append(k[1])
@@ -209,20 +289,27 @@ def venda(cad):
         vend.append(item.copy())
         item.clear()
        
-      i+=1
+      
       
         
 
-
+    print("Venda registrada!")
     ch=str(input("Deseja registrar mais alguma venda?(s/n):"))
-    while ch=="s":
-      venda(cad)
-    if ch=="n":
-      select(cad)    
+
+    while ch!="s" and ch!="n":
+      ch=str(input("Deseja registrar mais alguma venda?(s/n)"))
+      
+    else:
+      if ch=="s":
+        venda(cad)
+      elif ch=="n":        
+        select(cad)
+
+       
   
   elif op==2:
     nom=str(input("Digite o nome da peça vendida:"))
-    i=0
+    
     for k in cad:
       if nom==k[1]:
         xquant=int(input("Digite a quantidade vendida do item:"))
@@ -237,25 +324,33 @@ def venda(cad):
         vend.append(item.copy())
         item.clear()
         
-      i+=1
       
+
+    print("Venda registrada!")  
     ch=str(input("Deseja registrar mais alguma venda?(s/n):"))
-    while ch=="s":
-      venda(cad)
-    if ch=="n":
-      select(cad)
+
+    while ch!="s" and ch!="n":
+      ch=str(input("Deseja registrar mais alguma venda?(s/n)"))
+      
+    else:
+      if ch=="s":
+        venda(cad)
+      elif ch=="n":        
+        select(cad)
 
 
-#Função 6- Mostrar relatório de vendas
+#6-Função Mostrar relatório de vendas
 def mVenda(vend):
-  print(vend)
+  for k in vend:
+    print("\nCódigo:",k[0],"\nNome:",k[1],"\nQuantidade vendida:",k[2],"Valor da venda:",k[3])
+  
   total=0
   for k in vend:
     total=total+k[3]
-  print("Valor total das vendas:",total)
+  print("\nValor total das vendas:",total)
   select(cad)
 
-#Função 7- Armazenar (salvar/gravar) cadastro em um arquivo
+#7-Função Armazenar (salvar/gravar) cadastro em um arquivo
 def armazena(cad):
   f = open("cad.db", "w")
   f.write(str(len(cad))+"\n")
@@ -267,13 +362,12 @@ def armazena(cad):
     f.write(str(i[3])+"\n")
     f.write(str(i[4])+"\n")
   f.close()
-
-  select(cad)
+  
 
   
 
 
-#Função 8- Carregar (ler) um cadastro a partir de um arquivo
+#8-Função Carregar (ler) um cadastro a partir de um arquivo
 def ler(cad):
   f = open("cad.db", "r")
   quantItens = int(f.readline())
@@ -297,17 +391,15 @@ def ler(cad):
 
   select(cad)
 
-#menu(item)- se botar cad não vai gravar na lista
-#mostra(cad) - se botar mostra item vai dar vazio
-#remv(cad)
+
 
 #Fução que gerencia o menu
 def select (cad):
   op=0
-  while op<=0 or op>8:
-    op=int(input("Digite o número da opção:\n 1-Insere\n 2-Mostra\n 3-Remove\n 4-Editar peça\n 5-Vender peça\n 6-Mostra relatório de vendas\n 7-Gravar\n 8-Ler\n"))
+  while op<=0 or op>8:    
+    op=int(input("Digite o número da opção:\n 1-Inserir peça\n 2-Mostrar peça\n 3-Remover peça\n 4-Editar peça\n 5-Vender peça\n 6-Mostra relatório de vendas\n 7-Gravar\n 8-Ler\n"))
     if op==1:
-      menu(item)    
+      insere(item)    
     elif op==2:
       mostra(cad)
     elif op==3:
@@ -319,7 +411,7 @@ def select (cad):
     elif op==6:
       mVenda(vend)
     elif op==7:
-      armazena(cad)
+      armazena(cad)      
     elif op==8:
       ler(cad)  
 
